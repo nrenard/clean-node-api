@@ -39,4 +39,18 @@ describe('DbAddAccount Usecase', () => {
 
     expect(encryptSpy).toHaveBeenCalledWith('valid_password')
   })
+
+  test('Should throw if Encrypter throws', async () => {
+    const { sut, encrypterStub } = makeSut()
+    jest.spyOn(encrypterStub, 'encrypt').mockRejectedValueOnce(new Error())
+
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email@gmail.com',
+      password: 'valid_password'
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    expect(sut.add(accountData)).rejects.toThrowError()
+  })
 })
